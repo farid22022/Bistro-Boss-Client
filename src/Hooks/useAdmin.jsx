@@ -1,21 +1,20 @@
-import { Navigate, useLocation } from "react-router-dom";
-import useAdmin from "../Hooks/useAdmin";
-import useAuth from "../Hooks/useAuth";
+import { useQuery } from "@tanstack/react-query";
+import useAuth from "./useAuth";
+import useAxiosSecure from "./useAxiosSecure";
 
 
-const AdminRoute = (children) => {
-    const [user, loading] = useAuth(); 
-    const [isAdmin, isAdminLoading] = useAdmin();
-    const location = useLocation();
-
-    if(loading || isAdminLoading){
-        return <progress className="progress w-56"></progress>
-    }
-
-    if (user && isAdmin) {
-        return children;
-    }
-    return <Navigate to="/login" state={{from: location}} replace></Navigate>
+const useAdmin = () => {
+    const { user } = useAuth();
+    const axiosSecure = useAxiosSecure();
+    const { data: isAdmin, isPending: isAdminLoading } = useQuery({
+        queryKey: [user?.email, 'isAdmin'],
+        queryFn: async () => {
+            const res = await axiosSecure.get(`/users/admin/${user.email}`);
+            // console.log(res.data);
+            return res.data?.admin;
+        }
+    })
+    return [isAdmin, isAdminLoading]
 };
 
-export default AdminRoute;
+export default useAdmin;

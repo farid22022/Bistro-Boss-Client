@@ -17,6 +17,7 @@ const FoodCard = ({item}) => {
     const [, refetch] = useCart();
 
     const handleAddToCard = () =>{
+        console.log('20',user)
         if(user && user.email){
             // send cart item to the database
             const cartItem = {
@@ -53,10 +54,11 @@ const FoodCard = ({item}) => {
                 cancelButtonColor: "#d33",
                 confirmButtonText: "Yes, login!"
             }).then((result) => {
-                if (result.isConfirmed) {
-                    //   send the user to the login page
-                    navigate('/login', {state: {from: location}})
-                }
+                // if (result.isConfirmed) {
+                //     //   send the user to the login page
+                //     navigate('/login', {state: {from: location}})
+                // }
+                console.log(result)
             });
         }
 
